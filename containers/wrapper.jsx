@@ -1,11 +1,19 @@
+
 (function() {
   'use strict';
+  var Provider = ReactRedux.Provider;
+  var createStore = Redux.createStore;
+  var reducer = require('../reducers');
+  var socket = require('../libs/socket.io.js');
+  var store = createStore(reducer);
+  socket.listen(store);
+  var App = require('./app.jsx');
   var Wrapper = React.createClass({
     render: function() {
         return (
-          <div>
-            <h1>Hello World</h1>
-          </div>
+          <Provider store={store}>
+            <App />
+          </Provider>
         );
     }
   });
