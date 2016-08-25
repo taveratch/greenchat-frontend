@@ -1,11 +1,9 @@
-(function() {
-  'use strict';
-  var Wrapper = React.createClass({
-    render: function() {
-      return (
-        <p>{this.props.item}</p>
-      );
-    }
-  });
-  module.exports = connect()(Wrapper);
-}());
+class Wrapper extends React.Component {
+  render() {
+    return (
+      <p>{this.props.item}</p>
+    );
+  }
+}
+
+export default connect()(Wrapper);

@@ -1,24 +1,32 @@
+import {Provider} from 'react-redux';
+import {createStore, combineReducers} from 'redux';
+import socket from '../libs/socket.io';
+import reducer from '../reducers';
+import {Router, Route, browserHistory} from 'react-router';
+import {syncHistoryWithStore, routerReducer} from 'react-router-redux';
+import App from './app.jsx';
+import Channels from './channels.jsx';
+import Signin from './signin.jsx';
 
-(function() {
-  'use strict';
-  var Provider = ReactRedux.Provider;
-  var createStore = Redux.createStore;
-  var reducer = require('../reducers');
-  var socket = require('../libs/socket.io.js');
-  var store = createStore(reducer);
-  socket.listen(store);
-  var App = require('./app.jsx');
-  var Wrapper = React.createClass({
-    render: function() {
-        return (
-          <Provider store={store}>
-            <App />
-          </Provider>
-        );
-    }
-  });
-  module.exports = Wrapper;
-}());
+const store = createStore(combineReducers({reducer: reducer, routing: routerReducer}));
+const history = syncHistoryWithStore(browserHistory, store);
+socket.listen(store);
 
-var Wrapper = require('./wrapper.jsx');
-ReactDOM.render(<Wrapper />, document.getElementById('app'));
+class Wrapper extends React.Component {
+	render() {
+		return (
+			<Provider store={store}>
+				<Router history={history}>
+					<Route path='/' component={App}>
+						<Route path='signin' component={Signin} />
+            <Route path='index' component={Channels} />
+					</Route>
+				</Router>
+			</Provider>
+		);
+	}
+}
+
+export default Wrapper;
+ReactDOM.render(
+	<Wrapper/>, document.getElementById('app'));
